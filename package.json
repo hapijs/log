@@ -1,0 +1,33 @@
+{
+  "name": "@hapi/log",
+  "version": "0.1.0",
+  "description": "Logging plugin for hapi",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hapijs/log.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hapijs/log/issues"
+  },
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "test": "lab -a @hapi/code -t 100",
+    "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@hapi/code": "8.x.x",
+    "@hapi/hapi": "20.x.x",
+    "@hapi/lab": "24.x.x"
+  },
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "logging"
+  ]
+}
