@@ -1,7 +1,7 @@
 'use strict';
 
-const Assert = require('assert');
 const EventEmitter = require('events');
+const { expect } = require('@hapi/code');
 const Hapi = require('@hapi/hapi');
 const Plugin = require('../lib');
 
@@ -176,7 +176,7 @@ const validateObject = function (actual, expected) {
 
     const actualKeys = Object.keys(actual);
 
-    Assert.deepStrictEqual(actualKeys, Object.keys(expected));
+    expect(actualKeys).to.equal(Object.keys(expected));
     actualKeys.forEach((key) => {
 
         const value = actual[key];
@@ -186,7 +186,7 @@ const validateObject = function (actual, expected) {
             return;
         }
 
-        Assert.deepStrictEqual(value, expectedValue);
+        expect(value).to.equal(expectedValue);
     });
 };
 
