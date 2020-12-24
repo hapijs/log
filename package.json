@@ -12,7 +12,7 @@
   },
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "lab -a @hapi/code -t 100",
+    "test": "lab -a @hapi/code -t 100 -L",
     "test-cov-html": "lab -a @hapi/code -t 100 -L -r html -o coverage.html"
   },
   "engines": {
