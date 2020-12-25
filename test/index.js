@@ -1,6 +1,6 @@
 'use strict';
 
-const Assert = require('assert');
+const { expect } = require('@hapi/code');
 const Hapi = require('@hapi/hapi');
 const Lab = require('@hapi/lab');
 const Plugin = require('../lib');
@@ -26,33 +26,33 @@ describe('Log', () => {
                 options.logger = new MockLogger();
             }
 
-            await Assert.rejects(() => {
+            await expect((() => {
 
                 return server.register({ plugin: Plugin, options });
-            }, err);
+            })()).to.reject(err);
         };
 
-        check('foo', /^TypeError: options must be an object$/);
-        check({ defaultLevel: 5 }, /^TypeError: defaultLevel must be a string$/);
-        check({ defaultLevel: 'zzz' }, /^Error: zzz is not a valid log level$/);
-        check({ level: 5 }, /^TypeError: level must be a string$/);
-        check({ level: 'zzz' }, /^Error: zzz is not a valid log level$/);
-        check({ events: null }, /^TypeError: events must be an array$/);
-        check({ events: [5] }, /^TypeError: events\[0\] must be a string$/);
-        check({ ignoreChannels: null }, /^TypeError: ignoreChannels must be an array$/);
-        check({ ignoreChannels: [5] }, /^TypeError: ignoreChannels\[0\] must be a string$/);
-        check({ ignorePaths: null }, /^TypeError: ignorePaths must be an array$/);
-        check({ ignorePaths: [5] }, /^TypeError: ignorePaths\[0\] must be a string$/);
-        check({ ignoreTags: null }, /^TypeError: ignoreTags must be an array$/);
-        check({ ignoreTags: [5] }, /^TypeError: ignoreTags\[0\] must be a string$/);
-        check({ logger: null }, /^TypeError: logger must be an object$/);
-        check({ logger: 'foo' }, /^TypeError: logger must be an object$/);
-        check({ logLevelMap: null }, /^TypeError: logLevelMap must be an object$/);
-        check({ logLevelMap: 'foo' }, /^TypeError: logLevelMap must be an object$/);
-        check({ logLevelMap: { foo: 'not-valid' } }, /^Error: not-valid is not a valid log level$/);
-        check({ onError: 'foo' }, /^TypeError: onError must be a function$/);
-        check({ additionalFields: 5 }, /^TypeError: additionalFields must be an object$/);
-        check({ additionalFields: null }, /^TypeError: additionalFields must be an object$/);
+        check('foo', /^options must be an object$/);
+        check({ defaultLevel: 5 }, /^defaultLevel must be a string$/);
+        check({ defaultLevel: 'zzz' }, /^zzz is not a valid log level$/);
+        check({ level: 5 }, /^level must be a string$/);
+        check({ level: 'zzz' }, /^zzz is not a valid log level$/);
+        check({ events: null }, /^events must be an array$/);
+        check({ events: [5] }, /^events\[0\] must be a string$/);
+        check({ ignoreChannels: null }, /^ignoreChannels must be an array$/);
+        check({ ignoreChannels: [5] }, /^ignoreChannels\[0\] must be a string$/);
+        check({ ignorePaths: null }, /^ignorePaths must be an array$/);
+        check({ ignorePaths: [5] }, /^ignorePaths\[0\] must be a string$/);
+        check({ ignoreTags: null }, /^ignoreTags must be an array$/);
+        check({ ignoreTags: [5] }, /^ignoreTags\[0\] must be a string$/);
+        check({ logger: null }, /^logger must be an object$/);
+        check({ logger: 'foo' }, /^logger must be an object$/);
+        check({ logLevelMap: null }, /^logLevelMap must be an object$/);
+        check({ logLevelMap: 'foo' }, /^logLevelMap must be an object$/);
+        check({ logLevelMap: { foo: 'not-valid' } }, /^not-valid is not a valid log level$/);
+        check({ onError: 'foo' }, /^onError must be a function$/);
+        check({ additionalFields: 5 }, /^additionalFields must be an object$/);
+        check({ additionalFields: null }, /^additionalFields must be an object$/);
     });
 
     it('handles "start" and "stop" events by default', async () => {
@@ -63,11 +63,11 @@ describe('Log', () => {
         await server.stop();
         const events = server.__logger.items;
 
-        Assert.strictEqual(events.length, 4);
-        Assert.deepStrictEqual(events[0], 'connect');
-        Assert.deepStrictEqual(events[1], ['info', 'server started', undefined, {}]);
-        Assert.deepStrictEqual(events[2], ['info', 'server stopped', undefined, {}]);
-        Assert.deepStrictEqual(events[3], 'close');
+        expect(events.length).to.equal(4);
+        expect(events[0]).to.equal('connect');
+        expect(events[1]).to.equal(['info', 'server started', undefined, {}]);
+        expect(events[2]).to.equal(['info', 'server stopped', undefined, {}]);
+        expect(events[3]).to.equal('close');
     });
 
     it('disables "start" and "stop" events', async () => {
@@ -79,9 +79,9 @@ describe('Log', () => {
         await server.start();
         await server.stop();
         const events = server.__logger.items;
-        Assert.strictEqual(events.length, 2);
-        Assert.deepStrictEqual(events[0], 'connect');
-        Assert.deepStrictEqual(events[1], 'close');
+        expect(events.length).to.equal(2);
+        expect(events[0]).to.equal('connect');
+        expect(events[1]).to.equal('close');
     });
 
     it('changes the default log level', async () => {
@@ -92,11 +92,11 @@ describe('Log', () => {
         await server.stop();
         const events = server.__logger.items;
 
-        Assert.strictEqual(events.length, 4);
-        Assert.deepStrictEqual(events[0], 'connect');
-        Assert.deepStrictEqual(events[1], ['emergency', 'server started', undefined, {}]);
-        Assert.deepStrictEqual(events[2], ['emergency', 'server stopped', undefined, {}]);
-        Assert.deepStrictEqual(events[3], 'close');
+        expect(events.length).to.equal(4);
+        expect(events[0]).to.equal('connect');
+        expect(events[1]).to.equal(['emergency', 'server started', undefined, {}]);
+        expect(events[2]).to.equal(['emergency', 'server stopped', undefined, {}]);
+        expect(events[3]).to.equal('close');
     });
 
     it('handles "log" events', async () => {
@@ -107,14 +107,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('info');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['info', 'foo'],
@@ -131,9 +131,9 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('ignores "log" events based on channel', async () => {
@@ -147,9 +147,9 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles "log" events if channel does not match', async () => {
@@ -163,14 +163,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('info');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['info', 'foo'],
@@ -190,9 +190,9 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles "log" events if tags do not match', async () => {
@@ -206,14 +206,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('info');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['info', 'foo'],
@@ -233,9 +233,9 @@ describe('Log', () => {
             url: '/handler/that/server/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles log level precedence in "log" events', async () => {
@@ -246,14 +246,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/error'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'error');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('error');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['info', 'error', 'debug'],
@@ -273,14 +273,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/default/level'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'emergency');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('emergency');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['foo'],
@@ -308,14 +308,14 @@ describe('Log', () => {
             url: '/handler/that/server/logs/error'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'alert');
-        Assert.strictEqual(type, 'log event');
+        expect(level).to.equal('alert');
+        expect(type).to.equal('log event');
         validateObject(event, {
             timestamp: kAnyValue,
             tags: ['info', 'error', 'debug'],
@@ -332,15 +332,15 @@ describe('Log', () => {
             url: '/simple'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, payload] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request received');
-        Assert(typeof payload === 'string' && payload.length > 0);
+        expect(level).to.equal('info');
+        expect(type).to.equal('request received');
+        expect(typeof payload === 'string' && payload.length > 0).to.be.true();
     });
 
     it('ignores "onRequest" based on path', async () => {
@@ -354,9 +354,9 @@ describe('Log', () => {
             url: '/simple'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles "response" events', async () => {
@@ -367,14 +367,14 @@ describe('Log', () => {
             url: '/simple'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request completed');
+        expect(level).to.equal('info');
+        expect(type).to.equal('request completed');
     });
 
     it('ignores "response" events based on path', async () => {
@@ -388,9 +388,9 @@ describe('Log', () => {
             url: '/simple'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles "response" events if ignore paths does not match', async () => {
@@ -404,14 +404,14 @@ describe('Log', () => {
             url: '/simple'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request completed');
+        expect(level).to.equal('info');
+        expect(type).to.equal('request completed');
     });
 
     it('ignores "response" events based on tags', async () => {
@@ -425,9 +425,9 @@ describe('Log', () => {
             url: '/route/with/tags'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
-        Assert.strictEqual(server.__logger.items.length, 0);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
+        expect(server.__logger.items.length).to.equal(0);
     });
 
     it('handles "response" events if ignore tags does not match', async () => {
@@ -441,8 +441,8 @@ describe('Log', () => {
             url: '/route/with/tags'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
 
         res = await server.inject({
             method: 'GET',
@@ -450,13 +450,13 @@ describe('Log', () => {
         });
 
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 2);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(2);
+        expect(items[0].length).to.equal(4);
         const [level, type] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request completed');
-        Assert.deepStrictEqual(items[1][0], 'info');
-        Assert.deepStrictEqual(items[1][1], 'request completed');
+        expect(level).to.equal('info');
+        expect(type).to.equal('request completed');
+        expect(items[1][0]).to.equal('info');
+        expect(items[1][1]).to.equal('request completed');
     });
 
     it('can handle "error" events from the underlying logger', () => {
@@ -470,7 +470,7 @@ describe('Log', () => {
                 logger,
                 onError(err) {
 
-                    Assert.strictEqual(err, testError);
+                    expect(err).to.shallow.equal(testError);
                     resolve();
                 }
             });
@@ -487,14 +487,14 @@ describe('Log', () => {
             url: '/handler/that/request/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request log event');
+        expect(level).to.equal('info');
+        expect(type).to.equal('request log event');
         validateObject(event, {
             request: kAnyValue,
             timestamp: kAnyValue,
@@ -512,14 +512,14 @@ describe('Log', () => {
             url: '/handler/that/request/logs/default/level'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request log event');
+        expect(level).to.equal('info');
+        expect(type).to.equal('request log event');
         validateObject(event, {
             request: kAnyValue,
             timestamp: kAnyValue,
@@ -537,14 +537,14 @@ describe('Log', () => {
             url: '/handler/that/request/throws'
         });
 
-        Assert.strictEqual(res.statusCode, 500);
+        expect(res.statusCode).to.equal(500);
         const items = server.__logger.items;
         // Length is two because hapi has "handler error" and "internal error"
-        Assert.strictEqual(items.length, 2);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(2);
+        expect(items[0].length).to.equal(4);
         const [level, type, event] = items[0];
-        Assert.strictEqual(level, 'error');
-        Assert.strictEqual(type, 'request error');
+        expect(level).to.equal('error');
+        expect(type).to.equal('request error');
         validateObject(event, {
             request: kAnyValue,
             timestamp: kAnyValue,
@@ -565,10 +565,10 @@ describe('Log', () => {
             url: '/handler/that/request/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 0);
+        expect(items.length).to.equal(0);
     });
 
     it('can ignore "request" events based on event', async () => {
@@ -582,10 +582,10 @@ describe('Log', () => {
             url: '/handler/that/request/logs/info'
         });
 
-        Assert.strictEqual(res.payload, 'success');
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.payload).to.equal('success');
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 0);
+        expect(items.length).to.equal(0);
     });
 
     it('validates "response" payload format', async () => {
@@ -605,26 +605,26 @@ describe('Log', () => {
             }
         });
 
-        Assert.strictEqual(res.statusCode, 200);
+        expect(res.statusCode).to.equal(200);
         const items = server.__logger.items;
-        Assert.strictEqual(items.length, 1);
-        Assert.strictEqual(items[0].length, 4);
+        expect(items.length).to.equal(1);
+        expect(items[0].length).to.equal(4);
         const [level, type, event, additionalFields] = items[0];
-        Assert.strictEqual(level, 'info');
-        Assert.strictEqual(type, 'request completed');
-        Assert(typeof event.req.id === 'string');
-        Assert.strictEqual(event.req.method, 'post');
-        Assert.strictEqual(event.req.path, '/handler/with/payload');
-        Assert.strictEqual(event.req.headers['x-test-header'], 'abc123');
-        Assert.deepEqual(event.req.query, { q: '1', x: '9' });
-        Assert.deepStrictEqual(event.req.payload, {
+        expect(level).to.equal('info');
+        expect(type).to.equal('request completed');
+        expect(typeof event.req.id).to.equal('string');
+        expect(event.req.method).to.equal('post');
+        expect(event.req.path).to.equal('/handler/with/payload');
+        expect(event.req.headers['x-test-header']).to.equal('abc123');
+        expect(event.req.query).to.equal({ q: '1', x: '9' });
+        expect(event.req.payload).to.equal({
             foo: 'abc',
             bar: 5,
             baz: true
         });
-        Assert.strictEqual(event.res.statusCode, 200);
-        Assert(typeof event.res.headers === 'object' && event.res.headers !== null);
-        Assert(Number.isSafeInteger(event.responseTime));
-        Assert.deepStrictEqual(additionalFields, { pid: process.pid });
+        expect(event.res.statusCode).to.equal(200);
+        expect(typeof event.res.headers === 'object' && event.res.headers !== null).to.be.true();
+        expect(Number.isSafeInteger(event.responseTime)).to.be.true();
+        expect(additionalFields).to.equal({ pid: process.pid });
     });
 });
