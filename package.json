@@ -22,6 +22,7 @@
   "devDependencies": {
     "@hapi/code": "8.x.x",
     "@hapi/hapi": "20.x.x",
+    "@hapi/hoek": "9.x.x",
     "@hapi/lab": "24.x.x"
   },
   "files": [
