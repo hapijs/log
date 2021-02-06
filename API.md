@@ -67,7 +67,7 @@ An array of strings where each value represents the name of an event dispatched 
 - `stop` event
   - The logger will automatically be closed upon `stop` event reception whether it is present in the `events` array or not.
 
-The automatic logging behavior on `log` and `request` event is handled differently from the other. If the received event object contains tags, they will be tested against the [log levels](#log-levels). If there are matches and a matched log level has a more severe log level than the [default level](#register.defaultLevel) it will be used instead. If there are no matches, the [default level](#register.defaultLevel) will be used.
+The automatic logging behavior on `log` and `request` event is handled differently from the other. If the received event object contains tags, they will be tested against the [log levels](#log-levels). If there are matches and a matched log level has a more severe log level than the [default level](#register.defaultLevel) it will be used instead. When multiple tags match, the one with the most severe log level will be used. If there are no matches, the [default level](#register.defaultLevel) will be used.
 
 ### <a name="register.ignoreChannels" /> `ignoreChannels`
 
