@@ -93,3 +93,9 @@ An array of strings whose values are route paths to exclude from logging. This o
 Default value: `[]`.
 
 An array of strings whose values are tags to exclude from logging. Event tags and routes tags will be matched against this option. No log will be performed as long as at least one tag matches from this option. Tags from `log` and `request` events will be checked. Route tags filtering will be performed for requests on `request`, `response` event and `onRequest` lifecycle.
+
+### <a name="register.level" /> `level`
+
+Default value: [`'info'`](#log-level).
+
+A [log level](#log-level) string used to determine the maximum log level allowed, meaning the log level with the highest numerical value allowed. For example let's say you defined this option as `level: 'notice'`, whose numerical value is `5`. Afterwards a `log` event is intercepted by this plugin whose tags contain `'debug'` matching with the 8th log level (`debug (7)`). This event will not be logged since its numerical value is higher than the numerical value of this option.
