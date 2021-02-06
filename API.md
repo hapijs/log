@@ -67,7 +67,7 @@ An array of strings where each value represents the name of an event dispatched 
 - `stop` event
   - The logger will automatically be closed upon `stop` event reception whether it is present in the `events` array or not.
 
-The automatic logging behavior on `log` and `request` event is handled differently from the other. If the received event object contains tags, they will be tested against the [log levels](#log-levels). If there are matches and a matched log level has a more severe log level than the [default level](#register.defaultLevel) it will be used instead. When multiple tags match, the one with the most severe log level will be used. If there are no matches, the [default level](#register.defaultLevel) will be used.
+The automatic logging behavior on `log` and `request` event is handled differently from the others. If the received event object contains tags, they will be tested against the [log levels](#log-levels). If there are matches and a matched log level has a more severe log level than the [default level](#register.defaultLevel) it will be used instead. When multiple tags match, the one with the most severe log level will be used. If there are no matches, the [default level](#register.defaultLevel) will be used.
 
 ### <a name="register.ignoreChannels" /> `ignoreChannels`
 
@@ -111,7 +111,7 @@ An object with several methods to setup and log information:
 - `logger.on(eventName, callback)`: this method is used to listen to events on the logger object. It is used to listen to an `error` event when the [`onError`](#register.onError) option is provided. It accepts two arguments:
   - `eventName`: a string for the event name.
   - `callback`: a function that should be called when an event matching the event name is dispatched.
-- `logger[level](label, data, additionalFields)`: methods for every log level in the [`events`](#register.events) option. These methods will be called with three arguments:
+- `logger[level](label, data, additionalFields)`: methods for every log level in the [`events`](#register.events) option i.e `logger.notice()` or `logger.critical()`. These methods will be called with three arguments:
   - `label`: a string label.
   - `data`: an object containing data about the event, `undefined` when no data are sent.
   - `additionalFields`: the object passed to the [`additionalFields`](#register.additionalFields) option.
