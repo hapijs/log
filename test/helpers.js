@@ -190,5 +190,39 @@ const validateObject = function (actual, expected) {
     });
 };
 
+const captureStd = function () {
 
-module.exports = { createServer, kAnyValue, validateObject, MockLogger };
+    let output = '';
+    let errorOutput = '';
+    let combinedOutput = '';
+
+    const onStdout = (data) => {
+
+        output += data;
+        combinedOutput += data;
+    };
+
+    const onStderr = (data) => {
+
+        errorOutput += data;
+        combinedOutput += data;
+    };
+
+    const complete = () => {
+
+        return { output, errorOutput, combinedOutput };
+    };
+
+    return {
+        complete,
+        stdout: {
+            write: onStdout
+        },
+        stderr: {
+            write: onStderr
+        }
+    };
+};
+
+
+module.exports = { createServer, kAnyValue, validateObject, MockLogger, captureStd };

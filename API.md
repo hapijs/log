@@ -102,17 +102,17 @@ A [log level](#log-level) string used to determine the maximum log level allowed
 
 ### <a name="register.logger" /> `logger`
 
-Default value: `null`.
+Default value: `Stdlogger`.
 
 An object with several methods to setup and log information:
 
-- `async logger.connect()`: this method is called during the `onPreStart` lifecycle.
-- `logger.close()`: this method is called upon reception of the server `stop` event. It should execute cleanup logic i.e closing files, closing remote communication.
+- `async logger.connect()` (optional): this method is called during the `onPreStart` lifecycle.
+- `logger.close()` (optional): this method is called upon reception of the server `stop` event. It should execute cleanup logic i.e closing files, closing remote communication.
 - `logger.on(eventName, callback)`: this method is used to listen to events on the logger object. It is used to listen to an `error` event when the [`onError`](#register.onError) option is provided. It accepts two arguments:
   - `eventName`: a string for the event name.
   - `callback`: a function that should be called when an event matching the event name is dispatched.
 - `logger[level](label, data, additionalFields)`: methods for every log level in the [`events`](#register.events) option i.e `logger.notice()` or `logger.critical()`. These methods will be called with three arguments:
-  - `label`: a string label.
+  - `message`: the message to log. Can be a string or an object that can be stringified.
   - `data`: an object containing data about the event, `undefined` when no data are sent.
   - `additionalFields`: the object passed to the [`additionalFields`](#register.additionalFields) option.
 
