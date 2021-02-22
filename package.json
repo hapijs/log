@@ -18,11 +18,12 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@hapi/hoek": "9.x.x"
+  },
   "devDependencies": {
     "@hapi/code": "8.x.x",
     "@hapi/hapi": "20.x.x",
-    "@hapi/hoek": "9.x.x",
     "@hapi/lab": "24.x.x"
   },
   "files": [

@@ -4,7 +4,9 @@ const { expect } = require('@hapi/code');
 const Hapi = require('@hapi/hapi');
 const Lab = require('@hapi/lab');
 const Plugin = require('../lib');
+const Stdlogger = require('../lib/stdlogger');
 const {
+    captureStd,
     createServer,
     kAnyValue,
     validateObject,
@@ -45,7 +47,6 @@ describe('Log', () => {
         check({ ignorePaths: [5] }, /^ignorePaths\[0\] must be a string$/);
         check({ ignoreTags: null }, /^ignoreTags must be an array$/);
         check({ ignoreTags: [5] }, /^ignoreTags\[0\] must be a string$/);
-        check({ logger: null }, /^logger must be an object$/);
         check({ logger: 'foo' }, /^logger must be an object$/);
         check({ logLevelMap: null }, /^logLevelMap must be an object$/);
         check({ logLevelMap: 'foo' }, /^logLevelMap must be an object$/);
@@ -53,6 +54,27 @@ describe('Log', () => {
         check({ onError: 'foo' }, /^onError must be a function$/);
         check({ additionalFields: 5 }, /^additionalFields must be an object$/);
         check({ additionalFields: null }, /^additionalFields must be an object$/);
+    });
+
+    it('defaults to stdlogger', () => {
+
+        const server = new Hapi.Server();
+        server.register({ plugin: Plugin });
+        expect(server.registrations['@hapi/log']).to.exist();
+    });
+
+    it('supports a logger that is missing start/stop functions', async () => {
+
+        const std = captureStd();
+        const logger = new Stdlogger(std.stdout, std.stderr);
+        const server = new Hapi.Server();
+        await server.register({ plugin: Plugin, options: { logger } });
+        await server.start();
+        await server.stop();
+        const result = std.complete();
+
+        expect(result.output).to.contain('server started');
+        expect(result.output).to.contain('server stopped');
     });
 
     it('handles "start" and "stop" events by default', async () => {
@@ -65,8 +87,10 @@ describe('Log', () => {
 
         expect(events.length).to.equal(4);
         expect(events[0]).to.equal('connect');
-        expect(events[1]).to.equal(['info', 'server started', undefined, {}]);
-        expect(events[2]).to.equal(['info', 'server stopped', undefined, {}]);
+        expect(events[1]).to.contain(['info', undefined, {}]);
+        expect(events[1][1]).to.contain('server started');
+        expect(events[2]).to.contain(['info', undefined, {}]);
+        expect(events[2][1]).to.contain('server stopped');
         expect(events[3]).to.equal('close');
     });
 
@@ -94,8 +118,10 @@ describe('Log', () => {
 
         expect(events.length).to.equal(4);
         expect(events[0]).to.equal('connect');
-        expect(events[1]).to.equal(['emergency', 'server started', undefined, {}]);
-        expect(events[2]).to.equal(['emergency', 'server stopped', undefined, {}]);
+        expect(events[1]).to.contain(['emergency', undefined, {}]);
+        expect(events[1][1]).to.contain('server started');
+        expect(events[2]).to.contain(['emergency', undefined, {}]);
+        expect(events[2][1]).to.contain('server stopped');
         expect(events[3]).to.equal('close');
     });
 
@@ -337,10 +363,10 @@ describe('Log', () => {
         const items = server.__logger.items;
         expect(items.length).to.equal(1);
         expect(items[0].length).to.equal(4);
-        const [level, type, payload] = items[0];
+        const [level, type, request] = items[0];
         expect(level).to.equal('info');
-        expect(type).to.equal('request received');
-        expect(typeof payload === 'string' && payload.length > 0).to.be.true();
+        expect(type).to.contain('request');
+        expect(request).to.be.exist();
     });
 
     it('ignores "onRequest" based on path', async () => {
