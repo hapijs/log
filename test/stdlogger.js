@@ -17,6 +17,7 @@ describe('Stdlogger', () => {
         logger.info('my msg');
         const result = std.complete();
         expect(result.output).to.contain('my msg');
+        expect(result.errorOutput).to.not.contain('my msg');
     });
 
     it('logs error level to stderr', () => {
@@ -26,6 +27,7 @@ describe('Stdlogger', () => {
         logger.error('my error');
         const result = std.complete();
         expect(result.errorOutput).to.contain('my error');
+        expect(result.output).to.not.contain('my msg');
     });
 
     it('formats additional fields on top level object', () => {
@@ -34,7 +36,8 @@ describe('Stdlogger', () => {
         const logger = new Stdlogger(std.stdout, std.stderr);
         logger.info('my msg', null, { test: 'test' });
         const result = std.complete();
-        expect(result.output).to.contain(',"test":"test"');
+        expect(result.output).to.contain('"msg":"my msg"');
+        expect(result.output).to.contain('"test":"test"');
     });
 
     it('writes data object to data field', () => {
@@ -43,6 +46,7 @@ describe('Stdlogger', () => {
         const logger = new Stdlogger(std.stdout, std.stderr);
         logger.info('my msg', { foo: 'bar' });
         const result = std.complete();
+        expect(result.output).to.contain('"msg":"my msg"');
         expect(result.output).to.contain('"data":{"foo":"bar"}');
     });
 });
