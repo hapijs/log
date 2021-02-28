@@ -19,7 +19,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@hapi/validate": "^1.1.3"
+    "@hapi/hoek": "9.x.x",
+    "@hapi/validate": "1.x.x"
   },
   "devDependencies": {
     "@hapi/code": "8.x.x",

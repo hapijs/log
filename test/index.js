@@ -87,9 +87,9 @@ describe('Log', () => {
 
         expect(events.length).to.equal(4);
         expect(events[0]).to.equal('connect');
-        expect(events[1]).to.contain(['info', undefined, {}]);
+        expect(events[1][0]).to.equal('info');
         expect(events[1][1]).to.contain('server started');
-        expect(events[2]).to.contain(['info', undefined, {}]);
+        expect(events[2][0]).to.equal('info');
         expect(events[2][1]).to.contain('server stopped');
         expect(events[3]).to.equal('close');
     });
@@ -118,9 +118,9 @@ describe('Log', () => {
 
         expect(events.length).to.equal(4);
         expect(events[0]).to.equal('connect');
-        expect(events[1]).to.contain(['emergency', undefined, {}]);
+        expect(events[1][0]).to.equal('emergency');
         expect(events[1][1]).to.contain('server started');
-        expect(events[2]).to.contain(['emergency', undefined, {}]);
+        expect(events[2][0]).to.equal('emergency');
         expect(events[2][1]).to.contain('server stopped');
         expect(events[3]).to.equal('close');
     });
@@ -651,6 +651,6 @@ describe('Log', () => {
         expect(event.res.statusCode).to.equal(200);
         expect(typeof event.res.headers === 'object' && event.res.headers !== null).to.be.true();
         expect(Number.isSafeInteger(event.responseTime)).to.be.true();
-        expect(additionalFields).to.equal({ pid: process.pid });
+        expect(additionalFields.pid).to.equal(process.pid);
     });
 });
