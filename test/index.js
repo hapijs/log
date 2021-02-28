@@ -34,26 +34,26 @@ describe('Log', () => {
             })()).to.reject(err);
         };
 
-        check('foo', /^options must be an object$/);
-        check({ defaultLevel: 5 }, /^defaultLevel must be a string$/);
-        check({ defaultLevel: 'zzz' }, /^zzz is not a valid log level$/);
-        check({ level: 5 }, /^level must be a string$/);
-        check({ level: 'zzz' }, /^zzz is not a valid log level$/);
-        check({ events: null }, /^events must be an array$/);
-        check({ events: [5] }, /^events\[0\] must be a string$/);
-        check({ ignoreChannels: null }, /^ignoreChannels must be an array$/);
-        check({ ignoreChannels: [5] }, /^ignoreChannels\[0\] must be a string$/);
-        check({ ignorePaths: null }, /^ignorePaths must be an array$/);
-        check({ ignorePaths: [5] }, /^ignorePaths\[0\] must be a string$/);
-        check({ ignoreTags: null }, /^ignoreTags must be an array$/);
-        check({ ignoreTags: [5] }, /^ignoreTags\[0\] must be a string$/);
-        check({ logger: 'foo' }, /^logger must be an object$/);
-        check({ logLevelMap: null }, /^logLevelMap must be an object$/);
-        check({ logLevelMap: 'foo' }, /^logLevelMap must be an object$/);
+        check('foo', /must be of type object$/);
+        check({ defaultLevel: 5 }, /"defaultLevel" must be one of .emergency, alert, critical, error, warning, notice, info, debug.$/);
+        check({ defaultLevel: 'zzz' }, /"defaultLevel" must be one of .emergency, alert, critical, error, warning, notice, info, debug.$/);
+        check({ level: 5 }, /"level" must be one of .emergency, alert, critical, error, warning, notice, info, debug.$/);
+        check({ level: 'zzz' }, /"level" must be one of .emergency, alert, critical, error, warning, notice, info, debug.$/);
+        check({ events: null }, /"events" must be an array$/);
+        check({ events: [5] }, /"events\[0\]" must be one of .log, onRequest, request, response, start, stop.$/);
+        check({ ignoreChannels: null }, /"ignoreChannels" must be an array$/);
+        check({ ignoreChannels: [5] }, /"ignoreChannels\[0\]" must be a string$/);
+        check({ ignorePaths: null }, /"ignorePaths" must be an array$/);
+        check({ ignorePaths: [5] }, /"ignorePaths\[0\]" must be a string$/);
+        check({ ignoreTags: null }, /"ignoreTags" must be an array$/);
+        check({ ignoreTags: [5] }, /"ignoreTags\[0\]" must be a string$/);
+        check({ logger: 'foo' }, /"logger" must be of type object$/);
+        check({ logLevelMap: null }, /"logLevelMap" must be of type object$/);
+        check({ logLevelMap: 'foo' }, /"logLevelMap" must be of type object$/);
         check({ logLevelMap: { foo: 'not-valid' } }, /^not-valid is not a valid log level$/);
-        check({ onError: 'foo' }, /^onError must be a function$/);
-        check({ additionalFields: 5 }, /^additionalFields must be an object$/);
-        check({ additionalFields: null }, /^additionalFields must be an object$/);
+        check({ onError: 'foo' }, /"onError" must be of type function$/);
+        check({ additionalFields: 5 }, /"additionalFields" must be of type object$/);
+        check({ additionalFields: null }, /"additionalFields" must be of type object$/);
     });
 
     it('defaults to stdlogger', () => {
