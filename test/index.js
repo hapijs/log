@@ -366,7 +366,8 @@ describe('Log', () => {
         const [level, type, request] = items[0];
         expect(level).to.equal('info');
         expect(type).to.contain('request');
-        expect(request).to.be.exist();
+        expect(request.path).to.equal('/simple');
+        expect(request.method).to.equal('get');
     });
 
     it('ignores "onRequest" based on path', async () => {
