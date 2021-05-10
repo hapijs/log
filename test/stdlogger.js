@@ -2,7 +2,7 @@
 
 const { expect } = require('@hapi/code');
 const Lab = require('@hapi/lab');
-const Stdlogger = require('../lib/stdlogger');
+const { Stdlogger } = require('../lib');
 const { captureStd } = require('./helpers');
 
 const { describe, it } = exports.lab = Lab.script();

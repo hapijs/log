@@ -43,7 +43,7 @@ This plugin accepts several options:
 
 ### <a name="register.additionalFields" /> `additionalFields`
 
-Default value: `{}`.
+Default value: `{ hostname, pid, node }`.
 
 A free form object that will be passed to the log function for every elements in [events](#register.events).
 
@@ -149,3 +149,17 @@ It is used **only** when reading the tags from the `request` and `log` events to
 Default value: `undefined`.
 
 A function that, if provided, is passed as the callback to the `error` event of the [`logger.on()`](#register.logger) method.
+
+## <a name="stdlogger" /> Stdlogger
+
+log exports Stdlogger, which can be constructed and passed as the `logger` option to log.
+The constructor takes the following arguments:
+
+`new Log.StdLogger(stdout, stderr);`
+
+## <a name="pinologger" /> Pinologger
+
+log exports Pinologger, which can be constructed and passed as the `logger` option to log.
+The output from a hapi server using the `Pinologger` can be piped to [`pino-pretty`](https://github.com/pinojs/pino-pretty) or other pino compatible modules. The constructor takes the following arguments:
+
+`new Log.Pinologger(stdout);`
