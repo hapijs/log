@@ -1,6 +1,6 @@
 {
   "name": "@hapi/log",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "Logging plugin for hapi",
   "main": "lib/index.js",
   "repository": {
