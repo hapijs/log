@@ -654,4 +654,57 @@ describe('Log', () => {
         expect(Number.isSafeInteger(event.responseTime)).to.be.true();
         expect(additionalFields.pid).to.equal(process.pid);
     });
+
+    describe('setLevel()', () => {
+
+        it('log level can be changed after plugin is running', async () => {
+
+            const server = await createServer({
+                level: 'emergency',
+                events: ['log']
+            });
+            let res = await server.inject({
+                method: 'GET',
+                url: '/handler/that/server/logs/info'
+            });
+
+            expect(res.payload).to.equal('success');
+            expect(res.statusCode).to.equal(200);
+            let items = server.__logger.items;
+            expect(items.length).to.equal(0);
+
+            server.plugins.log.setLevel('info');
+            res = await server.inject({
+                method: 'GET',
+                url: '/handler/that/server/logs/info'
+            });
+
+            expect(res.payload).to.equal('success');
+            expect(res.statusCode).to.equal(200);
+            items = server.__logger.items;
+            expect(items.length).to.equal(1);
+            const [level, type, event] = items[0];
+            expect(level).to.equal('info');
+            expect(type).to.equal('log event');
+            validateObject(event, {
+                timestamp: kAnyValue,
+                tags: ['info', 'foo'],
+                data: 'server.log() from handler',
+                channel: 'app'
+            });
+        });
+
+        it('log level cannot be changed to invalid level', async () => {
+
+            const server = await createServer({
+                level: 'emergency',
+                events: ['log']
+            });
+
+            expect(() => {
+
+                server.plugins.log.setLevel('invalid');
+            }).to.throw();
+        });
+    });
 });
