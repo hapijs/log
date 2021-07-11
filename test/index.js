@@ -660,7 +660,7 @@ describe('Log', () => {
         it('log level can be changed after plugin is running', async () => {
 
             const server = await createServer({
-                level: 'emergency',
+                level: 'error',
                 events: ['log']
             });
             let res = await server.inject({
@@ -673,6 +673,15 @@ describe('Log', () => {
             let items = server.__logger.items;
             expect(items.length).to.equal(0);
 
+            res = await server.inject({
+                method: 'GET',
+                url: '/handler/that/server/logs/error'
+            });
+            expect(res.payload).to.equal('success');
+            expect(res.statusCode).to.equal(200);
+            items = server.__logger.items;
+            expect(items.length).to.equal(1);
+
             server.plugins.log.setLevel('info');
             res = await server.inject({
                 method: 'GET',
@@ -682,8 +691,8 @@ describe('Log', () => {
             expect(res.payload).to.equal('success');
             expect(res.statusCode).to.equal(200);
             items = server.__logger.items;
-            expect(items.length).to.equal(1);
-            const [level, type, event] = items[0];
+            expect(items.length).to.equal(2);
+            const [level, type, event] = items[1];
             expect(level).to.equal('info');
             expect(type).to.equal('log event');
             validateObject(event, {
