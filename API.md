@@ -163,3 +163,10 @@ log exports Pinologger, which can be constructed and passed as the `logger` opti
 The output from a hapi server using the `Pinologger` can be piped to [`pino-pretty`](https://github.com/pinojs/pino-pretty) or other pino compatible modules. The constructor takes the following arguments:
 
 `new Log.Pinologger(stdout);`
+
+## <a name="setLevel" /> `server.plugins.log.setLevel(level)`
+
+The log level can be changed after the plugin is registered by using the
+`server.plugins.log.setLevel(level)` function. Only valid levels are accepted.
+After the level is changed only log events that are below the threshold will be
+logged.
