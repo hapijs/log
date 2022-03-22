@@ -2,8 +2,6 @@
 
 # @hapi/log
 
-**This project is still a WIP and has such has not been deployed to NPM**
-
 #### Logging for hapi framework.
 
 **log** is part of the **hapi** ecosystem and was designed to work seamlessly with the [hapi web framework](https://hapi.dev) and its other components (but works great on its own or with other frameworks). If you are using a different web framework and find this module useful, check out [hapi](https://hapi.dev) – they work even better together.
